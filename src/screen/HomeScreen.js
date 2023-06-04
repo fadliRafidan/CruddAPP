@@ -1,26 +1,25 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   ImageBackground,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useSelector } from 'react-redux';
 import CardList from './component/CardList';
-import {useSelector} from 'react-redux';
 
-export default function HomeScreen() {
+function HomeScreen() {
   const navigation = useNavigation();
+  let user = useSelector(state => state.AuthReducers.user);
   const [data, setData] = useState('');
   const [loading, setLoading] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  let user = useSelector(state => state.AuthReducers.user);
   const getDataContact = async () => {
     setLoading(true);
     try {
@@ -31,7 +30,6 @@ export default function HomeScreen() {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
     }
   };
   useEffect(() => {
@@ -51,7 +49,18 @@ export default function HomeScreen() {
   };
   return (
     <View style={styles.container}>
-      <ScrollView
+      <FlatList
+        data={data}
+        renderItem={({item, index}) => (
+          <CardList
+            key={index}
+            index={item.id}
+            firstName={item.firstName}
+            lastName={item.lastName}
+            age={item.age}
+            photo={item.photo}
+          />
+        )}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -59,58 +68,48 @@ export default function HomeScreen() {
             colors={['#66A5AD']}
           />
         }
-        style={{width: '100%'}}>
-        <View style={styles.card}>
-          <ImageBackground
-            source={require('../images/contact-logo.jpg')}
-            style={styles.backgroundImage}>
-            <View>
-              <Text style={styles.textReady}>
-                Hi {`${user.name}`}, good day!
-              </Text>
-            </View>
-            <View>
-              <Text style={styles.textReady}>Lets Create!</Text>
-            </View>
-          </ImageBackground>
-          {loading && (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Text>Loading...</Text>
-            </View>
-          )}
-          <FlatList
-            data={data}
-            renderItem={({item, index}) => (
-              <CardList
-                key={index}
-                index={item.id}
-                firstName={item.firstName}
-                lastName={item.lastName}
-                age={item.age}
-                photo={item.photo}
-              />
+        ListHeaderComponent={() => (
+          <View>
+            <ImageBackground
+              source={require('../../images/contact-logo.jpg')}
+              style={styles.backgroundImage}>
+              <View>
+                <Text style={styles.textReady}>
+                  Hi {`${user.name}`}, good day!
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.textReady}>Lets Create!</Text>
+              </View>
+            </ImageBackground>
+            {loading && (
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text>Loading...</Text>
+              </View>
             )}
-          />
-        </View>
-      </ScrollView>
-      <View style={{position: 'absolute', right: 20, bottom: 80}}>
-        <TouchableOpacity onPress={() => navigation.navigate('AddContact')}>
-          <View style={styles.addButton}>
-            <Icon name="plus" size={30} color={'#FFF'} />
           </View>
-        </TouchableOpacity>
-      </View>
+        )}
+        ListFooterComponent={() => (
+          <View style={{position: 'absolute', right: 20, bottom: 80}}>
+            <TouchableOpacity onPress={() => navigation.navigate('AddContact')}>
+              <View style={styles.addButton}>
+                <Icon name="plus" size={30} color={'#FFF'} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
     </View>
   );
 }
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 15,
     position: 'relative',
-  },
-  card: {
     marginHorizontal: 10,
   },
   addButton: {

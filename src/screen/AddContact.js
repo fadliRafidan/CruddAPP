@@ -13,8 +13,8 @@ import {
 import DocumentPicker from 'react-native-document-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
-import {EditContact, TambahContact} from '../store/actions';
-export default function AddContact({route}) {
+import {editContact, tambahContact} from '../store/actions';
+function AddContact({route}) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const data = route.params;
@@ -35,7 +35,6 @@ export default function AddContact({route}) {
         `https://contact.herokuapp.com/contact/${data?.id}`,
       );
       if (res.status === 200) {
-        console.log(res);
         let json = res.data.data;
         setFirstName(json.firstName);
         setLastName(json.lastName);
@@ -43,9 +42,7 @@ export default function AddContact({route}) {
         setSingleFile(json.photo);
         setDataImage(true);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -73,6 +70,7 @@ export default function AddContact({route}) {
       }
     }
   };
+
   const handlePressCreate = async () => {
     if (firstName.length === 0 || lastName.length === 0 || age.length === 0) {
       setError(true);
@@ -85,7 +83,7 @@ export default function AddContact({route}) {
         // photo: singleFile === null ? 'N/A' : singleFile[0].uri,
       };
       try {
-        dispatch(TambahContact(data));
+        dispatch(tambahContact(data));
         if (responseStatus && responseStatus === true) {
           navigation.navigate('Home');
         }
@@ -93,11 +91,11 @@ export default function AddContact({route}) {
           Alert.alert('Oppps something wrong...');
         }
       } catch (error) {
-        console.log(error);
         Alert.alert('Oppps something wrong...');
       }
     }
   };
+
   const handlePressUpdate = async () => {
     if (firstName.length === 0 || lastName.length === 0 || age.length === 0) {
       setError(true);
@@ -109,7 +107,7 @@ export default function AddContact({route}) {
         photo: dataDetailImage === true ? singleFile : singleFile[0].uri,
       };
       try {
-        dispatch(EditContact(dataUpdate, data?.id));
+        dispatch(editContact(dataUpdate, data?.id));
         if (responseStatusEdit && responseStatusEdit === true) {
           navigation.navigate('Home');
         }
@@ -117,7 +115,6 @@ export default function AddContact({route}) {
           Alert.alert('Oppps something wrong...');
         }
       } catch (error) {
-        console.log(error);
         Alert.alert('Oppps something wrong...');
       }
     }
@@ -130,14 +127,11 @@ export default function AddContact({route}) {
       handlePressCreate();
     }
   };
+
   const onDelete = async () => {
     try {
-      const res = await axios.delete(
-        'https://contact.herokuapp.com/contact/' + data?.id,
-      );
-      console.log(res);
+      await axios.delete('https://contact.herokuapp.com/contact/' + data?.id);
     } catch (error) {
-      console.log(error);
       Alert.alert('Ooppss something when wrong');
     }
   };
@@ -237,6 +231,8 @@ export default function AddContact({route}) {
     </View>
   );
 }
+
+export default AddContact;
 
 const styles = StyleSheet.create({
   container: {

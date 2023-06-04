@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-export const Init = () => {
+const init = () => {
   return async dispatch => {
     let user = await AsyncStorage.getItem('user');
     if (user !== null) {
@@ -9,12 +9,12 @@ export const Init = () => {
         payload: {user: JSON.parse(user)},
       });
     } else {
-      LogoutAction();
+      logoutAction();
     }
   };
 };
 
-export const LoginAction = user => {
+const loginAction = user => {
   return async dispatch => {
     await AsyncStorage.setItem('user', JSON.stringify(user));
     dispatch({
@@ -24,7 +24,7 @@ export const LoginAction = user => {
   };
 };
 
-export const LogoutAction = () => {
+const logoutAction = () => {
   return async dispatch => {
     await AsyncStorage.removeItem('user');
     dispatch({
@@ -33,7 +33,7 @@ export const LogoutAction = () => {
   };
 };
 
-export const TambahContact = kontak => {
+const tambahContact = kontak => {
   try {
     return async dispatch => {
       const res = await axios.post(
@@ -55,15 +55,13 @@ export const TambahContact = kontak => {
   }
 };
 
-export const EditContact = (kontak, id) => {
+const editContact = (kontak, id) => {
   try {
     return async dispatch => {
-      console.log(id);
       const res = await axios.put(
         'https://contact.herokuapp.com/contact/' + id,
         kontak,
       );
-      console.log(res);
       if (res.status === 201) {
         dispatch({
           type: 'EDIT_CONTACT',
@@ -72,7 +70,6 @@ export const EditContact = (kontak, id) => {
       }
     };
   } catch (error) {
-    console.log(error);
     dispatch({
       type: 'EDIT_CONTACT',
       payload: {responseStatusEdit: false},
@@ -80,3 +77,4 @@ export const EditContact = (kontak, id) => {
   }
 };
 
+export {init, loginAction, logoutAction, tambahContact, editContact};

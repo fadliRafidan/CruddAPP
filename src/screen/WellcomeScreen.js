@@ -1,21 +1,20 @@
+import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
   ImageBackground,
+  StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {LoginAction} from '../store/actions';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { loginAction } from '../store/actions';
 
-export default function WellcomeScreen() {
+function WellcomeScreen() {
+  const dispatch = useDispatch();
   const [text, setText] = useState('');
   const [error, setError] = useState(false);
-  const dispatch = useDispatch();
 
   const handlePress = () => {
     const user = {name: text};
@@ -23,13 +22,13 @@ export default function WellcomeScreen() {
       setError(true);
     } else {
       setError(false);
-      dispatch(LoginAction(user));
+      dispatch(loginAction(user));
     }
   };
 
   return (
     <ImageBackground
-      source={require('../images/contact-logo.jpg')}
+      source={require('../../images/contact-logo.jpg')}
       style={styles.backgroundImage}>
       <View style={styles.overlay}>
         <View style={styles.container}>
@@ -65,6 +64,8 @@ export default function WellcomeScreen() {
     </ImageBackground>
   );
 }
+
+export default WellcomeScreen;
 
 const styles = StyleSheet.create({
   backgroundImage: {

@@ -2,7 +2,7 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-export default function CardList({index, age, firstName, lastName, photo}) {
+function CardList({index, age, firstName, lastName, photo}) {
   const navigation = useNavigation();
   return (
     <View>
@@ -12,28 +12,10 @@ export default function CardList({index, age, firstName, lastName, photo}) {
         onPress={() =>
           navigation.navigate('AddContact', {isEdit: true, id: index})
         }>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            width: '100%',
-          }}>
-          <View
-            style={{
-              height: 30,
-              width: 5,
-              backgroundColor: '#66A5AD',
-            }}
-          />
+        <View style={styles.card}>
+          <View style={styles.cardBody} />
           <View style={{marginLeft: 10, width: '96%'}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                paddingRight: 10,
-              }}>
+            <View style={styles.sectionCard}>
               <View
                 style={{
                   flexDirection: 'column',
@@ -56,25 +38,9 @@ export default function CardList({index, age, firstName, lastName, photo}) {
                 </Text>
               </View>
               {photo !== 'N/A' ? (
-                <Image
-                  source={{uri: photo}}
-                  style={{
-                    height: 60,
-                    width: 60,
-                    borderRadius: 15,
-                  }}
-                />
+                <Image source={{uri: photo}} style={styles.image} />
               ) : (
-                <View
-                  style={{
-                    borderWidth: 1,
-                    borderColor: '#66A5AD',
-                    height: 60,
-                    width: 60,
-                    borderRadius: 15,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                <View style={styles.icon}>
                   <Icon name="user" size={50} color={'#66A5AD'} />
                 </View>
               )}
@@ -85,6 +51,8 @@ export default function CardList({index, age, firstName, lastName, photo}) {
     </View>
   );
 }
+
+export default CardList;
 
 const styles = StyleSheet.create({
   button: {
@@ -102,5 +70,36 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: 'row',
     marginBottom: 15,
+  },
+  card: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+  },
+  cardBody: {
+    height: 30,
+    width: 5,
+    backgroundColor: '#66A5AD',
+  },
+  sectionCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 10,
+  },
+  image: {
+    height: 60,
+    width: 60,
+    borderRadius: 15,
+  },
+  icon: {
+    borderWidth: 1,
+    borderColor: '#66A5AD',
+    height: 60,
+    width: 60,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

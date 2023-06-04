@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from 'react-redux';
 import HomeScreen from '../screen/HomeScreen';
 import WellcomeScreen from '../screen/WellcomeScreen';
-import {Init, LogoutAction} from '../store/actions';
+import {init, logoutAction} from '../store/actions';
 import {useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {TouchableOpacity, View} from 'react-native';
@@ -40,11 +40,11 @@ const AuthStack = () => {
 export default RootNavigation = () => {
   let user = useSelector(state => state.AuthReducers.user);
   const dispatch = useDispatch();
-  const init = async () => {
-    await dispatch(Init());
+  const renderInit = async () => {
+    await dispatch(init());
   };
   useEffect(() => {
-    init();
+    renderInit();
   }, []);
 
   return user === null ? <AuthStack /> : <MyStack />;
@@ -80,7 +80,7 @@ const homeScreenOption = {
       <View>
         <TouchableOpacity
           style={{marginRight: 3}}
-          onPress={() => dispatch(LogoutAction())}>
+          onPress={() => dispatch(logoutAction())}>
           <Icon name="power-off" size={30} color={'#1f4151'} />
         </TouchableOpacity>
       </View>
